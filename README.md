@@ -61,7 +61,10 @@ Note: These instructions assume a Mac/Linux environment
    * A full list of the required python dependencies is listed there
 
 ### GenBank Plugin Setup
-**NOTE: AWS Instances can charge you money if you stray past the free-tier instances/limits. Please be aware of this if you choose to try this!**
+
+NOTE 1: These instructions assume a Windows environement for the local computer running the plugin server, and a linux AWS EC2 environment for the Database and Communication servers.
+
+**NOTE 2: AWS Instances can charge you money if you stray past the free-tier instances/limits. Please be aware of this if you choose to try this!**
 
 #### Datbase Servers (AWS Instances)
 
