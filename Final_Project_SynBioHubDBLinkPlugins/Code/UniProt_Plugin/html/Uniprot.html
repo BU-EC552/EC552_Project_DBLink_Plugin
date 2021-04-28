@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>Uniprot Plugin</title>
+
+    <style>
+        .prot_struct {
+            display: block;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Gene Name -->
+
+    <div id="uniprot-file-container" class="container-fluid" style="display: none;">
+        <div class="row gy-2 mt-1">
+            <div class="col">
+                <h1 class="text-center">Uniprot DBLink</h1>
+            </div>
+            <div class="col">
+                <div class="btn-group">
+                    <li class="dropdown btn btn-primary">
+                        <span class="hidden-xs hidden-sm">Select Uniprot File</span>
+                        <span class="caret"></span>
+                        <ul id="uniprot-results-dropdown" class="dropdown-menu dropdown-toggle"></ul>
+                    </li>
+                </div>
+            </div>
+        </div>
+        <div class="row gy-3 mt-2">
+            <h4 id="uniprot-definition">Definition</h4>
+            <h5 id="uniprot-organism-name" style="font-style: italic;">Organism</h5>
+            <hr />
+        </div>
+        <div class="row gy-2 mt-1">
+            <div class="col">
+                <table id="uniprot-dataTable" class="table table-striped table-hover">
+                </table>
+            </div>
+        </div>
+        <div class="row gy-2 mt-1">
+            <div class="col">
+                <h4>DB Cross References</h4>
+                <hr />
+            </div>
+        </div>
+        <div class="row gy-2 mt-1">
+            <div class="col">
+                <table id="uniprot-pubdataTable" class="table table-striped table-hover">
+                </table>
+            </div>
+        </div>
+        <div class="row gy-2 mt-1">
+            <div class="col">
+                <h4>Structural Model</h4>
+                <hr />
+            </div>
+        </div>
+        <div class="row gy-2 mt-1 mb-3">
+            <div class="col">
+                <img id="uniprot-protein-model-image" src="" class="border-secondary img-thumbnail rounded float-start"
+                    style="max-width: 20%;">
+            </div>
+        </div>
+    </div>
+    <div id="uniprot-cannot-load" class="container-fluid" style="display: none;">
+        Could not load uniprot file for current page.
+        Reason: <span id="uniprot-no-load-reason"></span>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous">
+        </script>
+    <script>
+        var uniprot_blast_data = JSON.parse('UNIPROT_BLAST_OUTPUT');
+        if (uniprot_blast_data["status"] == "success") {
+            uniprot_filtered_data = uniprot_blast_data["data"]
+        }
+        function uniprot_load_table(name) {
+            var uniprot_def = document.getElementById("uniprot-definition");
+            var uniprot_organism = document.getElementById("uniprot-organism-name");
+            var uniprot_table = document.getElementById("uniprot-dataTable");
+            var uniprot_xref_table = document.getElementById("uniprot-pubdataTable");
+            var uniprot_struct_model = document.getElementById("uniprot-protein-model-image");
+            // Quick way to wipe the rows
+            uniprot_table.innerHTML = "";
+            uniprot_xref_table.innerHTML = "";
+            uniprot_def.textContent = "Definition";
+            uniprot_organism.textContent = "Organism"
+            uniprot_struct_model.style.visibility = "hidden";
+            uniprot_struct_model.src = "";
+
+
+            // Get data for accession id
+            for (keys in uniprot_filtered_data) {
+                // if (filtered_data[keys].id == name) {
+                if (uniprot_filtered_data[keys]["Accession ID"] == name) {
+                    // score.textContent = filtered_data[keys].score;
+                    // qcov.textContent = filtered_data[keys].per_cov;
+                    // identity.textContent = filtered_data[keys].per_id;
+
+                    var uniprot_data = uniprot_filtered_data[keys];
+                    console.log(uniprot_filtered_data[keys])
+                    for (uniprot_datum in uniprot_data) {
+                        console.log(uniprot_datum)
+                        var uniprot_rowCount = uniprot_table.rows.length;
+                        var uniprot_row = uniprot_table.insertRow(uniprot_rowCount);
+                        uniprot_row.id = "uniprot-" + keys + uniprot_datum;
+                        // row.id = keys;
+                        // if (datum == "Locus") {
+                        //     locus.textContent = filtered_data[keys].data[datum]
+                        // }
+                        if (uniprot_datum == "Name") {
+                            uniprot_def.textContent = uniprot_filtered_data[keys][uniprot_datum]
+                        }
+                        else if (uniprot_datum == "Organism") {
+                            uniprot_organism.textContent = uniprot_filtered_data[keys][uniprot_datum]
+                        }
+                        else if (uniprot_datum == "Cross References") {
+                            for (uniprot_xref_ind in uniprot_data[uniprot_datum]) {
+                                for (uniprot_xref_datum in uniprot_data[uniprot_datum][uniprot_xref_ind]) {
+                                    var uniprot_xref_rowCount = uniprot_xref_table.rows.length;
+                                    var uniprot_xref_row = uniprot_xref_table.insertRow(uniprot_xref_rowCount);
+                                    uniprot_xref_row.id = "uniprot-" + keys + uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind][uniprot_xref_datum];
+                                    if (uniprot_xref_datum == "img") {
+                                        uniprot_struct_model.src = uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind][uniprot_xref_datum];
+                                        uniprot_struct_model.style.visibility = "visible";
+
+                                    }
+
+                                    else if (uniprot_xref_datum == "type") {
+                                        uniprot_xref_row.insertCell(0).innerHTML = "Database: " + uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind][uniprot_xref_datum];
+                                        uniprot_xref_row.insertCell(1).innerHTML = ""
+                                        document.getElementById("uniprot-" + keys + uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind][uniprot_xref_datum]).style.fontWeight = "bold";
+
+                                    }
+                                    else if (uniprot_xref_datum == "Link") {
+                                        uniprot_xref_row.insertCell(0).innerHTML = "ID";
+                                        uniprot_xref_row.insertCell(1).innerHTML = '<a href="%LINK%">%ACC%</a>'.replace(/%LINK%/g, uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind][uniprot_xref_datum]).replace(/%ACC%/g, uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind]["id"]);
+                                    }
+                                    else if (uniprot_xref_datum != "id") {
+                                        uniprot_xref_row.insertCell(0).innerHTML = uniprot_xref_datum;
+                                        uniprot_xref_row.insertCell(1).innerHTML = uniprot_filtered_data[keys][uniprot_datum][uniprot_xref_ind][uniprot_xref_datum];
+                                    }
+
+                                }
+                            }
+
+                        }
+                        else if (uniprot_datum != "Link") {
+                            uniprot_row.insertCell(0).innerHTML = uniprot_datum;
+                            if (uniprot_datum == "Accession ID") {
+                                console.log(uniprot_filtered_data[keys]["Link"]);
+                                uniprot_row.insertCell(1).innerHTML = '<a href="%LINK%">%ACC%</a>'.replace(/%LINK%/g, uniprot_filtered_data[keys]["Link"]).replace(/%ACC%/g, uniprot_filtered_data[keys][uniprot_datum]);
+                            }
+                            else {
+                                uniprot_row.insertCell(1).innerHTML = uniprot_filtered_data[keys][uniprot_datum];
+                            }
+                        }
+                    }
+                    break
+                }
+            }
+
+        }
+        function uniprot_load_drop() {
+            var uniprot_dropper = document.getElementById("uniprot-results-dropdown")
+            uniprot_dropper.innerHTML = "";
+            for (set in uniprot_filtered_data) {
+                // Please don't judge me
+                var uniprot_tmp = document.createElement("li");
+                uniprot_tmp.innerHTML = '<a onClick="uniprot_load_table(this.textContent)">%ID%</a>';
+                // uniprot_tmp.innerHTML = '<button class="dropdown-item" type="button" onClick="load_table(this.textContent)">%ID%</button>';
+                // uniprot_tmp.innerHTML = uniprot_tmp.innerHTML.replace(/%ID%/g, filtered_data[set].id);
+                uniprot_tmp.innerHTML = uniprot_tmp.innerHTML.replace(/%ID%/g, uniprot_filtered_data[set]["Accession ID"]);
+                uniprot_dropper.append(uniprot_tmp)
+            }
+        }
+
+        if (uniprot_blast_data["status"] == "success") {
+            document.getElementById("uniprot-file-container").style.display = "block";
+            uniprot_load_drop();
+            uniprot_load_table(uniprot_blast_data["data"][0]["Accession ID"]);
+        }
+        else {
+            document.getElementById("uniprot-no-load-reason").innerHTML = uniprot_blast_data["status"]
+            document.getElementById("uniprot-cannot-load").style.display = "block";
+        }
+    </script>
+
+</body>
+
+</html>
