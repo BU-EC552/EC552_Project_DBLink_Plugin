@@ -56,6 +56,7 @@ Please be sure to have python 3.8+ and pip installed before proceeding. These in
    * A full list of the required python dependencies is listed there
 
 ### GenBank Plugin Setup
+**NOTE: AWS Instances can charge you money if you stray past the free-tier instances/limits. Please be aware of this if you choose to try this!**
 
 #### Datbase Servers (AWS Instances)
 
