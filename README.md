@@ -41,15 +41,20 @@ Please follow the official set up instructions for creating a BLAST + AWS instan
    
 ## Step 3: Cloning this Directory and Installing the Dependencies
 
-Please be sure to have python 3.8+ and pip installed before proceeding. These instructions assume a Windows Computer as the local computer and a Linux environment for the AWS EC2 instances.
+Please be sure to have python 3.8+ and pip installed before proceeding. 
 
 
 ### UniProt Plugin Setup
-1. On your local computer, run 
+
+Note: These instructions assume a Mac/Linux environment
+
+
+1. Make sure [Open JDK is installed](https://java.com/en/download/help/linux_x64_install.html) on your local computer 
+2. Run 
    
    `git clone https://github.com/watturkara/EC552_Project_DBLink_Plugin.git`
-2. Go to the following directory from the root of the repo `Final_Project_SynBioHubDBLinkPlugins/Code/UniProt_Plugin`
-3. Run 
+3. Go to the following directory from the root of the repo `Final_Project_SynBioHubDBLinkPlugins/Code/UniProt_Plugin`
+4. Run 
     
     `pip install -r requirements.txt`
 
