@@ -1,8 +1,11 @@
 # SynBioHub DBLink Plugins
 
+
 ### Authors: Anirudh Watturkar, Sean Nemtzow, Liam Murray, and Rahul Varki
 
-## Set up
+##### Note to see the full repos that are in the proper format for SynBioHub, please see [this for GenBank](https://github.com/helloSeen/Plugin-Visual-GenbankLink) and [this for UniProt](https://github.com/watturkara/Plugin-Visual-UniprotLink)
+
+# Set up
 ### There are three required setup steps
 #### 1. Installing a local SynBioHub Instance
 #### 2. Spawning at least two AWS EC2 instances
